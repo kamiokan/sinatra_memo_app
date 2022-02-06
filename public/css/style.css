@@ -1,0 +1,95 @@
+#main {
+    width: 360px;
+    max-width: 100%;
+    min-height: 400px;
+    margin: 0 auto;
+    padding: 2%;
+    border: 1px solid #EEE;
+    box-shadow: rgba(122, 122, 122, 0.0588235) 0px 0px 6px 3px;
+    -webkit-box-shadow: rgba(122, 122, 122, 0.0588235) 0px 0px 6px 3px;
+    -moz-box-shadow: rgba(122, 122, 122, 0.0588235) 0px 0px 6px 3px;
+}
+
+.title-area {
+    display: flex;
+    height: 40px;
+    margin-bottom: 30px;
+}
+
+.app-title {
+    width: 50%;
+    font-size: 1.2rem;
+    padding-top: 4px;
+}
+
+.memo-list {
+    list-style: circle inside;
+}
+
+.memo-list li {
+    padding: 4px 0;
+}
+
+.memo-list li a {
+    color: darkblue;
+    text-decoration: underline;
+}
+
+.memo-list li a:hover {
+    cursor: pointer;
+}
+
+.btn {
+    display: inline-block;
+    width: 300px;
+    max-width: 50%;
+    padding: 4px 10px;
+    background-color: #e25c00;
+    border: 2px solid transparent;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, .16);
+    color: #fff;
+    font-size: 1.125rem;
+    text-align: center;
+    text-decoration: none;
+    transition: .25s;
+}
+
+.btn:focus,
+.btn:hover {
+    background-color: #fff;
+    border-color: currentColor;
+    color: #e25c00;
+}
+
+.btn-center {
+    text-align: center;
+}
+
+.btn-half {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.btn-half .btn {
+    max-width: 40%;
+}
+
+.input-text {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 3px;
+    border: 2px solid #ddd;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.input-text:focus {
+    box-shadow: 0 0 5px 0 rgba(255, 153, 0, 1);
+    border: 2px solid #FFF !important;
+    outline: 0;
+}
+
+.show-text {
+    margin-bottom: 30px;
+}
