@@ -100,4 +100,6 @@ delete '/memo' do
   redirect '/'
 end
 
-# todo 存在しないURLにアクセスした時に、404ページが表示されること
+not_found do
+  '404 not found'
+end
