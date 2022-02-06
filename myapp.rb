@@ -1,6 +1,12 @@
 require 'sinatra'
 require 'csv'
 
+helpers do
+  def h(text)
+    Rack::Utils.escape_html(text)
+  end
+end
+
 get '/' do
   redirect '/memo'
 end
@@ -25,9 +31,8 @@ get '/memo/new' do
 end
 
 post '/memo/new' do
-  title = params[:title]
-  body = params[:body]
-  # todo サニタイズする
+  title = h(params[:title])
+  body = h(params[:body])
   CSV.open('data.csv', 'a') do |f|
     f << [title, body]
   end
@@ -66,9 +71,8 @@ end
 
 patch '/memo/:id' do
   memo_id = params[:id].to_i
-  new_title = params[:title]
-  new_body = params[:body]
-  # todo サニタイズする
+  new_title = h(params[:title])
+  new_body = h(params[:body])
   data_list = CSV.read('data.csv')
   data_list[memo_id][0] = new_title
   data_list[memo_id][1] = new_body
