@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra'
 require 'csv'
 
@@ -45,11 +47,11 @@ get '/memo/:id/show' do
   @body = ''
   data_list = CSV.read('data.csv')
   data_list.each_with_index do |data, i|
-    if i == memo_id
-      @memo_id = i
-      @title = data[0]
-      @body = data[1]
-    end
+    next if i != memo_id
+
+    @memo_id = i
+    @title = data[0]
+    @body = data[1]
   end
   erb :show
 end
@@ -60,11 +62,11 @@ get '/memo/:id/edit' do
   @body = ''
   data_list = CSV.read('data.csv')
   data_list.each_with_index do |data, i|
-    if i == memo_id
-      @memo_id = i
-      @title = data[0]
-      @body = data[1]
-    end
+    next if i != memo_id
+
+    @memo_id = i
+    @title = data[0]
+    @body = data[1]
   end
   erb :edit
 end
