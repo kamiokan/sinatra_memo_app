@@ -36,32 +36,18 @@ post '/memo/new' do
 end
 
 get '/memo/:id/show' do
-  memo_id = params[:id].to_i
+  @memo_id = params[:id].to_i
   @title = ''
   @body = ''
-  books = CSV.read(@file_name)
-  books.each_with_index do |data, i|
-    next if i != memo_id
-
-    @memo_id = i
-    @title = data[0]
-    @body = data[1]
-  end
+  find_memo_by_id(@memo_id)
   erb :show
 end
 
 get '/memo/:id/edit' do
-  memo_id = params[:id].to_i
+  @memo_id = params[:id].to_i
   @title = ''
   @body = ''
-  books = CSV.read(@file_name)
-  books.each_with_index do |data, i|
-    next if i != memo_id
-
-    @memo_id = i
-    @title = data[0]
-    @body = data[1]
-  end
+  find_memo_by_id(@memo_id)
   erb :edit
 end
 
@@ -87,7 +73,7 @@ delete '/memo' do
   books.delete_at(memo_id)
   File.delete(@file_name)
   books.each do |data|
-    CSV.open('data.csv', 'a') do |f|
+    CSV.open(@file_name, 'a') do |f|
       f << data
     end
   end
@@ -96,4 +82,14 @@ end
 
 not_found do
   '404 not found'
+end
+
+def find_memo_by_id(memo_id)
+  books = CSV.read(@file_name)
+  books.each_with_index do |book, i|
+    next if i != memo_id
+
+    @title = book[0]
+    @body = book[1]
+  end
 end
