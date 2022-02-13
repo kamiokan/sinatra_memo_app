@@ -3,6 +3,10 @@
 require 'sinatra'
 require 'csv'
 
+before do
+  @FILE_NAME = 'data.csv'
+end
+
 helpers do
   def h(text)
     Rack::Utils.escape_html(text)
@@ -14,9 +18,9 @@ get '/' do
 end
 
 get '/memo' do
-  if File.exist?('data.csv')
+  if File.exist?(@FILE_NAME)
     @title_list = ''
-    data_list = CSV.read('data.csv')
+    data_list = CSV.read(@FILE_NAME)
     data_list.each_with_index do |data, i|
       @title_list += '<li><a href="/memo/'
       @title_list += i.to_s
@@ -35,7 +39,7 @@ end
 post '/memo/new' do
   title = h(params[:title])
   body = h(params[:body])
-  CSV.open('data.csv', 'a') do |f|
+  CSV.open(@FILE_NAME, 'a') do |f|
     f << [title, body]
   end
   redirect '/'
@@ -45,7 +49,7 @@ get '/memo/:id/show' do
   memo_id = params[:id].to_i
   @title = ''
   @body = ''
-  data_list = CSV.read('data.csv')
+  data_list = CSV.read(@FILE_NAME)
   data_list.each_with_index do |data, i|
     next if i != memo_id
 
@@ -60,7 +64,7 @@ get '/memo/:id/edit' do
   memo_id = params[:id].to_i
   @title = ''
   @body = ''
-  data_list = CSV.read('data.csv')
+  data_list = CSV.read(@FILE_NAME)
   data_list.each_with_index do |data, i|
     next if i != memo_id
 
@@ -75,12 +79,12 @@ patch '/memo/:id' do
   memo_id = params[:id].to_i
   new_title = h(params[:title])
   new_body = h(params[:body])
-  data_list = CSV.read('data.csv')
+  data_list = CSV.read(@FILE_NAME)
   data_list[memo_id][0] = new_title
   data_list[memo_id][1] = new_body
-  File.delete('data.csv')
+  File.delete(@FILE_NAME)
   data_list.each do |data|
-    CSV.open('data.csv', 'a') do |f|
+    CSV.open(@FILE_NAME, 'a') do |f|
       f << data
     end
   end
@@ -89,11 +93,11 @@ end
 
 delete '/memo' do
   memo_id = params[:id].to_i
-  data_list = CSV.read('data.csv')
+  data_list = CSV.read(@FILE_NAME)
   data_list.delete_at(memo_id)
-  File.delete('data.csv')
+  File.delete(@FILE_NAME)
   data_list.each do |data|
-    CSV.open('data.csv', 'a') do |f|
+    CSV.open(@FILE_NAME, 'a') do |f|
       f << data
     end
   end
