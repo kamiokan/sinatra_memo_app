@@ -3,5 +3,9 @@
   <a class="btn" href="/memo/new">追加</a>
 </header>
 <ul class="memo-list">
-  <%= @title_list %>
+  <% File.exist?(@file_name) && @books.each_with_index do |book, i| %>
+    <li><a href="/memo/<%= i.to_s %>/show">
+      <%= h(book[0]) %>
+    </a></li>
+  <% end %>
 </ul>
