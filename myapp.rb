@@ -39,8 +39,8 @@ get '/memo/:id/show' do
   memo_id = params[:id].to_i
   @title = ''
   @body = ''
-  data_list = CSV.read(@file_name)
-  data_list.each_with_index do |data, i|
+  books = CSV.read(@file_name)
+  books.each_with_index do |data, i|
     next if i != memo_id
 
     @memo_id = i
@@ -54,8 +54,8 @@ get '/memo/:id/edit' do
   memo_id = params[:id].to_i
   @title = ''
   @body = ''
-  data_list = CSV.read(@file_name)
-  data_list.each_with_index do |data, i|
+  books = CSV.read(@file_name)
+  books.each_with_index do |data, i|
     next if i != memo_id
 
     @memo_id = i
@@ -69,11 +69,11 @@ patch '/memo/:id' do
   memo_id = params[:id].to_i
   new_title = h(params[:title])
   new_body = h(params[:body])
-  data_list = CSV.read(@file_name)
-  data_list[memo_id][0] = new_title
-  data_list[memo_id][1] = new_body
+  books = CSV.read(@file_name)
+  books[memo_id][0] = new_title
+  books[memo_id][1] = new_body
   File.delete(@file_name)
-  data_list.each do |data|
+  books.each do |data|
     CSV.open(@file_name, 'a') do |f|
       f << data
     end
@@ -83,10 +83,10 @@ end
 
 delete '/memo' do
   memo_id = params[:id].to_i
-  data_list = CSV.read(@file_name)
-  data_list.delete_at(memo_id)
+  books = CSV.read(@file_name)
+  books.delete_at(memo_id)
   File.delete(@file_name)
-  data_list.each do |data|
+  books.each do |data|
     CSV.open('data.csv', 'a') do |f|
       f << data
     end
