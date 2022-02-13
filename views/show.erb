@@ -4,11 +4,11 @@
 </header>
 <dl class="show-text">
   <dt>件名：</dt>
-  <dd><%= @title %></dd>
+  <dd><%= h(@title) %></dd>
 </dl>
 <dl class="show-text">
   <dt>本文：</dt>
-  <dd><%= @body %></dd>
+  <dd><%= h(@body) %></dd>
 </dl>
 <div class="btn-half">
   <a class="btn" href="/memo/<%= @memo_id %>/edit">変更</a>

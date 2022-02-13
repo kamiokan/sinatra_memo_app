@@ -4,8 +4,8 @@
 </header>
 <form method="post" action="/memo/<%= @memo_id %>">
   <input type="hidden" name="_method" value="patch">
-  <input type="text" name="title" value="<%= @title %>" class="input-text">
-  <textarea name="body" class="input-text"><%= @body %></textarea>
+  <input type="text" name="title" value="<%= h(@title) %>" class="input-text">
+  <textarea name="body" class="input-text"><%= h(@body) %></textarea>
   <div class="btn-center">
     <button class="btn" type="submit">変更</button>
   </div>
