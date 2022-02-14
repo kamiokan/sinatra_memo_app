@@ -4,17 +4,17 @@
 </header>
 <dl class="show-text">
   <dt>件名：</dt>
-  <dd><%= h(@title) %></dd>
+  <dd><%= h(@memo[:title]) %></dd>
 </dl>
 <dl class="show-text">
   <dt>本文：</dt>
-  <dd><%= h(@body) %></dd>
+  <dd><%= h(@memo[:body]) %></dd>
 </dl>
 <div class="btn-half">
-  <a class="btn" href="/memo/<%= @memo_id %>/edit">変更</a>
+  <a class="btn" href="/memo/<%= @memo[:id] %>/edit">変更</a>
   <form class="btn" method="post" action="/memo">
     <input type="hidden" name="_method" value="delete">
-    <input type="hidden" name="id" value="<%= @memo_id %>">
+    <input type="hidden" name="id" value="<%= @memo[:id] %>">
     <input type="submit" value="削除">
   </form>
 </div>

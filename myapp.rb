@@ -5,6 +5,7 @@ require 'csv'
 
 before do
   @file_name = 'data.csv'
+  @memo = { id: '', title: '', body: '' }
 end
 
 helpers do
@@ -36,18 +37,14 @@ post '/memo/new' do
 end
 
 get '/memo/:id/show' do
-  @memo_id = params[:id].to_i
-  @title = ''
-  @body = ''
-  find_memo_by_id(@memo_id)
+  @memo[:id] = params[:id].to_i
+  find_memo_by_id(@memo[:id])
   erb :show
 end
 
 get '/memo/:id/edit' do
-  @memo_id = params[:id].to_i
-  @title = ''
-  @body = ''
-  find_memo_by_id(@memo_id)
+  @memo[:id] = params[:id].to_i
+  find_memo_by_id(@memo[:id])
   erb :edit
 end
 
@@ -89,7 +86,7 @@ def find_memo_by_id(memo_id)
   books.each_with_index do |book, i|
     next if i != memo_id
 
-    @title = book[0]
-    @body = book[1]
+    @memo[:title] = book[0]
+    @memo[:body] = book[1]
   end
 end
