@@ -83,10 +83,6 @@ end
 
 def find_memo_by_id(memo_id)
   books = CSV.read(@file_name)
-  books.each_with_index do |book, i|
-    next if i != memo_id
-
-    @memo[:title] = book[0]
-    @memo[:body] = book[1]
-  end
+  @memo[:title] = books[memo_id][0]
+  @memo[:body] = books[memo_id][1]
 end
