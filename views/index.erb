@@ -1,0 +1,11 @@
+<header class="title-area">
+  <h1 class="app-title">メモアプリ</h1>
+  <a class="btn" href="/memo/new">追加</a>
+</header>
+<ul class="memo-list">
+  <% File.exist?(@file_name) && @books.each do |book| %>
+    <li><a href="/memo/<%= book[0].to_s %>/show">
+      <%= h(book[1]) %>
+    </a></li>
+  <% end %>
+</ul>
