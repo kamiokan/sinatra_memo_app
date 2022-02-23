@@ -2,11 +2,12 @@
 
 require 'sinatra'
 require 'csv'
+require 'pg'
 
 before do
-  @file_name = 'data.csv'
-  @id_file_name = 'id.txt'
   @memo = { id: '', title: '', body: '' }
+  db_config = { host: 'localhost', user: 'kamiokan', password: '', dbname: 'postgres', port: 5432 }
+  @conn = ConnectDB.new(db_config)
 end
 
 helpers do
@@ -20,7 +21,7 @@ get '/' do
 end
 
 get '/memo' do
-  File.exist?(@file_name) && (@books = CSV.read(@file_name))
+  @memos = @conn.select_memos
   erb :index
 end
 
@@ -29,60 +30,35 @@ get '/memo/new' do
 end
 
 post '/memo/new' do
-  id = fetch_current_id
-  title = params[:title]
-  body = params[:body]
-  CSV.open(@file_name, 'a') do |f|
-    f << [id, title, body]
-  end
-  increment_id(id)
+  @memo[:title] = params[:title]
+  @memo[:body] = params[:body]
+  @conn.add_memo(@memo)
   redirect '/'
 end
 
 get '/memo/:id/show' do
-  @memo[:id] = params[:id].to_i
-  find_memo_by_id(@memo[:id])
+  memo_id = params[:id].to_i
+  @the_memo = @conn.select_memo(memo_id)
   erb :show
 end
 
 get '/memo/:id/edit' do
-  @memo[:id] = params[:id].to_i
-  find_memo_by_id(@memo[:id])
+  memo_id = params[:id].to_i
+  @the_memo = @conn.select_memo(memo_id)
   erb :edit
 end
 
 patch '/memo/:id' do
-  memo_id = params[:id].to_i
-  new_title = params[:title]
-  new_body = params[:body]
-  books = CSV.read(@file_name)
-  books = books.each do |book|
-    if book[0].to_i == memo_id
-      book[1] = new_title
-      book[2] = new_body
-    end
-  end
-  File.delete(@file_name)
-  books.each do |data|
-    CSV.open(@file_name, 'a') do |f|
-      f << data
-    end
-  end
+  @memo[:id] = params[:id].to_i
+  @memo[:title] = params[:title]
+  @memo[:body] = params[:body]
+  @conn.edit_memo(@memo)
   redirect '/'
 end
 
 delete '/memo' do
   memo_id = params[:id].to_i
-  books = CSV.read(@file_name)
-  books.each do |book|
-    book[0].to_i == memo_id && books.delete(book)
-  end
-  File.delete(@file_name)
-  books.each do |data|
-    CSV.open(@file_name, 'a') do |f|
-      f << data
-    end
-  end
+  @conn.delete_memo(memo_id)
   redirect '/'
 end
 
@@ -90,27 +66,45 @@ not_found do
   '404 not found'
 end
 
-def find_memo_by_id(memo_id)
-  books = CSV.read(@file_name)
-  target_memo = books.find do |book|
-    book[0].to_i == memo_id
-  end
-  @memo[:title] = target_memo[1]
-  @memo[:body] = target_memo[2]
-end
-
-def fetch_current_id
-  if File.exist?(@id_file_name)
-    File.open(@id_file_name, 'r') do |f|
-      f.gets.to_i
+class ConnectDB
+  def self.finish
+    proc do
+      puts 'db connectioin fihished'
+      @connection.finish
     end
-  else
-    1
   end
-end
 
-def increment_id(id)
-  File.open(@id_file_name, 'w') do |f|
-    f.puts(id + 1)
+  def initialize(db_config)
+    @connection = PG.connect(db_config)
+    @connection.internal_encoding = 'UTF-8'
+    ObjectSpace.define_finalizer(self, ConnectDB.finish)
+  end
+
+  def select_memos
+    @connection.exec('SELECT * FROM memos ORDER BY id')
+  end
+
+  def select_memo(id)
+    query = 'SELECT * FROM memos WHERE id=$1'
+    @connection.prepare('select', query)
+    @connection.exec_prepared('select', [id]).first
+  end
+
+  def add_memo(memo_info)
+    query = 'INSERT INTO memos (title, body) VALUES ($1, $2)'
+    @connection.prepare('insert', query)
+    @connection.exec_prepared('insert', [memo_info[:title], memo_info[:body]])
+  end
+
+  def edit_memo(memo_info)
+    query = 'UPDATE memos SET title=$1, body=$2 WHERE id=$3'
+    @connection.prepare('update', query)
+    @connection.exec_prepared('update', [memo_info[:title], memo_info[:body], memo_info[:id]])
+  end
+
+  def delete_memo(id)
+    query = 'DELETE FROM memos WHERE id=$1'
+    @connection.prepare('delete', query)
+    @connection.exec_prepared('delete', [id])
   end
 end
