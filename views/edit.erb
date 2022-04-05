@@ -2,10 +2,10 @@
   <h1 class="app-title">メモアプリ</h1>
   <a class="btn" href="/memo">戻る</a>
 </header>
-<form method="post" action="/memo/<%= @the_memo['id'] %>">
+<form method="post" action="/memo/<%= @memo['id'] %>">
   <input type="hidden" name="_method" value="patch">
-  <input type="text" name="title" value="<%= h(@the_memo['title']) %>" class="input-text">
-  <textarea name="body" class="input-text"><%= h(@the_memo['body']) %></textarea>
+  <input type="text" name="title" value="<%= h(@memo['title']) %>" class="input-text">
+  <textarea name="body" class="input-text"><%= h(@memo['body']) %></textarea>
   <div class="btn-center">
     <button class="btn" type="submit">変更</button>
   </div>
