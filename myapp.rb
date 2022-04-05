@@ -38,13 +38,13 @@ end
 
 get '/memo/:id/show' do
   memo_id = params[:id].to_i
-  @the_memo = @conn.select_memo(memo_id)
+  @memo = @conn.select_memo(memo_id)
   erb :show
 end
 
 get '/memo/:id/edit' do
   memo_id = params[:id].to_i
-  @the_memo = @conn.select_memo(memo_id)
+  @memo = @conn.select_memo(memo_id)
   erb :edit
 end
 
