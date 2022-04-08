@@ -67,17 +67,9 @@ not_found do
 end
 
 class ConnectDB
-  def self.finish
-    proc do
-      puts 'db connection finished'
-      @connection.finish
-    end
-  end
-
   def initialize(db_config)
     @connection = PG.connect(db_config)
     @connection.internal_encoding = 'UTF-8'
-    ObjectSpace.define_finalizer(self, ConnectDB.finish)
   end
 
   def select_memos
